@@ -1,0 +1,148 @@
+#map-container {
+    display: flex;
+    height: calc(100vh - 71px);
+}
+        
+#map {
+    flex: 3;
+    height: 100%;
+}
+
+.new_upload{
+    position: absolute;
+    right: 30px;
+    top: 100px;
+    z-index: 1000;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.new_upload:hover {
+    background-color: #45a049;
+}
+
+.custom-popup {
+    max-width: 250px;
+}
+
+#add-marker-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1001;
+    width: 300px;
+}
+
+#add-marker-dialog h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+#add-marker-dialog input, #add-marker-dialog textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#add-marker-dialog button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#add-marker-dialog button.cancel {
+    background-color: #f44336;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.small {
+    background-color: rgba(181, 226, 140, 0.6);
+}
+
+.small div {
+    background-color: rgba(110, 204, 57, 0.6);
+}
+
+.medium {
+    background-color: rgba(241, 211, 87, 0.6);
+}
+
+.medium div {
+    background-color: rgba(240, 194, 12, 0.6);
+}
+
+.large {
+    background-color: rgba(253, 156, 115, 0.6);
+}
+
+.large div {
+    background-color: rgba(241, 128, 23, 0.6);
+}
+
+.files{
+    padding-bottom: 8px;
+}
+
+.set_of_images{
+    border: 1px solid #000;
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+    border-radius: 16px;
+    max-width: 200px;
+    margin-top: 5px;
+    margin-right: 10px;
+    background: #FFF;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.set_of_images:hover{
+    border: 1px solid #dbd7d7;
+    background: #dbd7d7;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.info>p{
+    margin: 0px;
+    font-size: 16px;
+}
+
+
+.files{
+    max-height: 150px;
+    overflow: scroll;
+}

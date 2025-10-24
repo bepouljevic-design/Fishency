@@ -1,0 +1,40 @@
+.back{
+    background-image: url(../images/blocky-bckground.jpeg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.logIn{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    padding: 50px 100px;
+    border-radius: 30px;
+    background: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    box-shadow: 0 8px 15px #000;
+}
+
+.logIn h1, input, button{
+    background: #fff;
+}
+
+.logIn>button{
+    width: 100%;
+    color:#FFF;
+    border-style: none;
+    background: #0d80ce;
+}
+
+.logIn>input{
+    width: 100%;
+    height: 20px;
+    
+}

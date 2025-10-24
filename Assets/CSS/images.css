@@ -1,0 +1,101 @@
+.back{
+    background: linear-gradient(to bottom, #35aff5 0%, #000 100%);
+    padding-top: 10px;
+    padding-bottom: 100%;
+}
+
+nav>div{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.images{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.images>h2{
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.user{
+    width: 30px;
+    height: auto;
+}
+
+header>h2{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.am-container {
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+.container-C {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid #E9E9E9;
+    width: 250px;
+    position: relative;
+    padding-left: auto;
+    padding-right: auto;
+    padding-top: 10px;
+    background: #fff;
+}
+
+.container-C>img:first-of-type{
+    border-radius: 16px 16px 0px 0px;
+    max-width: 230px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container-C>p{
+    margin-top: 8px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+
+.container-C:hover {
+    border: 1px solid #dbd7d7;
+    background: #dbd7d7;
+}
+
+.btn-download {
+    border-radius: 18px;
+    display: flex;
+    width: 36px;
+    height: 36px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background:none;
+}
+
+.am-hover:hover{
+    box-shadow: 4px 4px #000;
+    transition-duration: 0.35s;
+    cursor: pointer;
+}
+
+.btn-delete {
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    width: 36px;
+    height: 36px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
