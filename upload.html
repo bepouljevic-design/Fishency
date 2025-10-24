@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Fotografije na Karti</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="Assets/CSS/style.css">
+    <link rel="stylesheet" href="Assets/CSS/upload.css">
+    <style>
+    </style>
+</head>
+<body>
+    <header class="container H-maxw">
+        <nav>
+            <a href="introduction.html">Introduction</a>
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload</a>
+            <div>
+                <img src="Assets/images/phone.png" alt="phone icon">
+                <a href="#">+75 123 456 789</a>
+            </div>
+            <a href="#"><img class="user" src="Assets/images/user.png" alt="user icon"></a>
+        </nav>
+    </header>
+    
+
+    <section id="map-container">
+        <button class="new_upload" id="add-marker-btn">Dodaj marker</button>
+        <div id="map"></div>
+    </section>
+
+    <!-- Dijalog za dodavanje markera -->
+    <div id="overlay"></div>
+    <div id="add-marker-dialog">
+        <h3>Dodaj novi marker</h3>
+        <form id="marker-form">
+            <input type="text" id="marker-title" placeholder="Naziv markera" required>
+            <input type="text" id="marker-location" placeholder="Lokacija" required>
+            <input type="date" id="marker-date" required>
+            <input type="url" id="marker-image" placeholder="URL slike" required>
+            <textarea id="marker-description" placeholder="Opis (opcionalno)"></textarea>
+            <div>
+                <button type="submit">Spremi</button>
+                <button type="button" id="cancel-btn" class="cancel">Odustani</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script>
+        // Inicijalizacija mape
+        const map = L.map('map').setView([45.1, 15.2], 3); // Početni prikaz
+        
+        // Dodavanje OpenStreetMap sloja
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        const markerClusterGroup = L.markerClusterGroup({
+            chunkedLoading: true,
+            maxClusterRadius: 40, // Radijus na kojem grupira markere
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: true,
+            zoomToBoundsOnClick: true,
+            iconCreateFunction: function(cluster) {
+                const count = cluster.getChildCount();
+                let size = 'small';
+                
+                if (count > 10) {
+                    size = 'large';
+                } else if (count > 5) {
+                    size = 'medium';
+                }
+                
+                return L.divIcon({
+                    html: '<div><span>' + count + '</span></div>',
+                    className: 'marker-cluster ' + size,
+                    iconSize: L.point(40, 40)
+                });
+            }
+        });
+
+        // Dodavanje cluster na kartu
+        map.addLayer(markerClusterGroup);
+
+        // Primjer podataka o fotografijama
+        const photos = [
+            {
+                id: 1,
+                title: "Zagrebačka katedrala",
+                location: "Zagreb, Hrvatska",
+                lat: 45.8144,
+                lng: 15.9780,
+                date: "2023-05-15",
+                imageUrl: "https://images.unsplash.com/photo-1590330590635-a8c1e6eddf3c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 2,
+                title: "Dioklecijanova palača",
+                location: "Split, Hrvatska",
+                lat: 43.5081,
+                lng: 16.4402,
+                date: "2023-06-22",
+                imageUrl: "https://images.unsplash.com/photo-1592409065737-253c345eab84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 3,
+                title: "Plitvička jezera",
+                location: "Plitvička jezera, Hrvatska",
+                lat: 44.8654,
+                lng: 15.5820,
+                date: "2023-07-10",
+                imageUrl: "https://images.unsplash.com/photo-1592409065737-253c345eab84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 4,
+                title: "Colosseum",
+                location: "Rim, Italija",
+                lat: 41.8902,
+                lng: 12.4922,
+                date: "2023-04-05",
+                imageUrl: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 5,
+                title: "Eiffelov toranj",
+                location: "Pariz, Francuska",
+                lat: 48.8584,
+                lng: 2.2945,
+                date: "2023-08-18",
+                imageUrl: "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 6,
+                title: "Sagrada Familia",
+                location: "Barcelona, Španjolska",
+                lat: 41.4036,
+                lng: 2.1744,
+                date: "2023-09-12",
+                imageUrl: "https://images.unsplash.com/photo-1583422409516-2895a77efded?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            // Dodajmo još markera blizu postojećih za testiranje clusteringa
+            {
+                id: 7,
+                title: "Muzej suvremene umjetnosti",
+                location: "Zagreb, Hrvatska",
+                lat: 45.8025,
+                lng: 15.9746,
+                date: "2023-05-16",
+                imageUrl: "https://images.unsplash.com/photo-1590330590635-a8c1e6eddf3c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 8,
+                title: "Riva",
+                location: "Split, Hrvatska",
+                lat: 43.5079,
+                lng: 16.4395,
+                date: "2023-06-23",
+                imageUrl: "https://images.unsplash.com/photo-1592409065737-253c345eab84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: 9,
+                title: "Fontana di Trevi",
+                location: "Rim, Italija",
+                lat: 41.9009,
+                lng: 12.4833,
+                date: "2023-04-06",
+                imageUrl: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+            }
+        ];
+        
+        // Dodavanje markera u cluster grupu
+        const markers = [];
+        
+        photos.forEach(photo => {
+            addMarkerToMap(photo);
+        });
+        
+        // Funkcija za dodavanje markera na kartu
+        function addMarkerToMap(photo) {
+            // Stvaramo parent div za popup
+            const file_container = document.createElement('div');
+            file_container.className = 'files';
+
+            //postavljamo više filova sa slikama unutar jednog popup
+            for (let index = 0; index < 10; index++) {
+                const file = document.createElement('div');
+                file.className = 'set_of_images hover';
+                file.innerHTML = `
+                    <div class="info" onclick="document.location='images.html'" target="_blank">
+                        <h6>lubin_2025-05-26_20-30-37</h6>
+                        <p>Number of images:</p>
+                    </div>
+                    `;
+                file_container.appendChild(file);
+            };
+
+            // Stvaranje markera
+            const marker = L.marker([photo.lat, photo.lng]).bindPopup(file_container);
+            
+            // Dodavanje markera u cluster grupu
+            markerClusterGroup.addLayer(marker);
+            
+        }
+        
+        // Funkcija za formatiranje datuma
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('hr-HR', options);
+        }
+        
+        // Funkcija za označavanje aktivne fotografije
+        function highlightPhoto(photoId) {
+            // Uklanjanje aktivne klase sa svih fotografija
+            document.querySelectorAll('.photo-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Dodavanje aktivne klase odabranoj fotografiji
+            const selectedPhoto = document.querySelector(`.photo-item[data-id="${photoId}"]`);
+            if (selectedPhoto) {
+                selectedPhoto.classList.add('active');
+            }
+        }
+        
+        // Implementacija pretraživanja
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                document.querySelectorAll('.photo-item').forEach(item => {
+                    const title = item.querySelector('.photo-title').textContent.toLowerCase();
+                    const location = item.querySelector('.photo-location').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || location.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // Varijable za dodavanje markera
+        let isAddingMarker = false;
+        let tempMarker = null;
+        let selectedLatLng = null;
+        
+        // Dohvati elemente
+        const addMarkerBtn = document.getElementById('add-marker-btn');
+        const addMarkerDialog = document.getElementById('add-marker-dialog');
+        const overlay = document.getElementById('overlay');
+        const markerForm = document.getElementById('marker-form');
+        const cancelBtn = document.getElementById('cancel-btn');
+        
+        // Event listener za gumb "Dodaj marker"
+        addMarkerBtn.addEventListener('click', function() {
+            isAddingMarker = true;
+            addMarkerBtn.textContent = 'Odaberi lokaciju na karti';
+            addMarkerBtn.style.backgroundColor = '#f44336';
+        });
+        
+        // Event listener za klik na kartu
+        map.on('click', function(e) {
+            if (isAddingMarker) {
+                // Ukloni prethodni privremeni marker ako postoji
+                if (tempMarker) {
+                    map.removeLayer(tempMarker);
+                }
+                
+                // Dodaj privremeni marker
+                tempMarker = L.marker(e.latlng, {
+                    icon: L.divIcon({
+                        className: 'temp-marker',
+                        html: '<div style="background-color: red; width: 12px; height: 12px; border-radius: 50%;"></div>',
+                        iconSize: [12, 12]
+                    })
+                }).addTo(map);
+                
+                // Spremi koordinate
+                selectedLatLng = e.latlng;
+                
+                // Prikaži dijalog za unos podataka
+                showMarkerDialog();
+            }
+        });
+        
+        // Funkcija za prikaz dijaloga
+        function showMarkerDialog() {
+            addMarkerDialog.style.display = 'block';
+            overlay.style.display = 'block';
+            
+            // Postavi današnji datum kao zadani
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('marker-date').value = today;
+        }
+        
+        // Event listener za slanje forme
+        markerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Dohvati podatke iz forme
+            const title = document.getElementById('marker-title').value;
+            const location = document.getElementById('marker-location').value;
+            const date = document.getElementById('marker-date').value;
+            const imageUrl = document.getElementById('marker-image').value;
+            
+            // Generiraj ID za novi marker
+            const newId = photos.length > 0 ? Math.max(...photos.map(p => p.id)) + 1 : 1;
+            
+            // Stvori novi objekt fotografije
+            const newPhoto = {
+                id: newId,
+                title: title,
+                location: location,
+                lat: selectedLatLng.lat,
+                lng: selectedLatLng.lng,
+                date: date,
+                imageUrl: imageUrl
+            };
+            
+            // Dodaj u niz fotografija
+            photos.push(newPhoto);
+            
+            // Dodaj marker na kartu (u cluster grupu)
+            addMarkerToMap(newPhoto);
+            
+            // Resetiraj stanje
+            resetMarkerAdding();
+            
+            // Zatvori dijalog
+            addMarkerDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            
+            // Resetiraj formu
+            markerForm.reset();
+        });
+        
+        // Event listener za gumb "Odustani"
+        cancelBtn.addEventListener('click', function() {
+            resetMarkerAdding();
+            addMarkerDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            markerForm.reset();
+        });
+        
+        // Funkcija za resetiranje stanja dodavanja markera
+        function resetMarkerAdding() {
+            isAddingMarker = false;
+            addMarkerBtn.textContent = 'Dodaj marker';
+            addMarkerBtn.style.backgroundColor = '#4CAF50';
+            
+            // Ukloni privremeni marker
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
+            }
+            
+            selectedLatLng = null;
+        }
+
+        // Event listener za promjenu zoom levela - demonstracija clusteringa
+        map.on('zoomend', function() {
+            console.log('Trenutni zoom level:', map.getZoom());
+            console.log('Broj clustera:', markerClusterGroup.getLayers().length);
+        });
+    </script>
+</body>
+</html>
